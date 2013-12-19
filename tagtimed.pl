@@ -75,6 +75,9 @@ if ($@) {
 
 require "${path}util.pl";
 
+# TN, 2013/18/12: name the process for ps/top etc.
+$0 = "tagtimed";
+
 my $lstping = prevping($launchTime);
 my $nxtping = nextping($lstping);
 
