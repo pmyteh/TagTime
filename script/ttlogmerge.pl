@@ -56,6 +56,11 @@ open(my $f1, "<", $ARGV[0]) or die;
 open(my $f2, "<", $ARGV[1]) or die;
 open(my $fo, ">", $ARGV[2]) or die;
 
+# TODO: Should open the config file, and if we can, delete the .bee files
+# associated with it. For extra credit, we should only remove the ones
+# which are actually affected by the merge, possibly by flagging during
+# the merge step which files are dirty and deleting them afterward.
+
 # Read initial lines from files
 my $l1 = <$f1>;
 my $l2 = <$f2>;
