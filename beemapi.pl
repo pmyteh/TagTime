@@ -65,6 +65,18 @@ sub beemupdate { my($u, $g, $id, $t, $v, $c) = @_;
   beemerr('PUT', $uri, $data, $resp);
 }
 
+# Get a Goal object for user $u, goal $g, optionally including datapoints.
+# Valid values for $d are "true" and "false"
+sub beemgetgoal { my($u, $g, $d) = @_;
+  my $ua = LWP::UserAgent->new;
+  my $uri = $beembase .
+            "users/$u/goals/$g.json?auth_token=$beemauth&datapoints=$d";
+  my $data = { datapoints => $d };
+  my $resp = $ua->get($uri);
+  beemerr('GET', $uri, {}, $resp);
+  return decode_json($resp->content);
+}
+
 # Takes request type (GET, POST, etc), uri string, hashref of data arguments, 
 # and response object; barfs verbosely if problems. 
 # Obviously this isn't the best way to do this.
