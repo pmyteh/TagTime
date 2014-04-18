@@ -78,6 +78,17 @@ if ($outn) {
 # associated with it. For extra credit, we should only remove the ones
 # which are actually affected by the merge, possibly by flagging during
 # the merge step which files are dirty and deleting them afterward.
+#require "$ENV{HOME}/.tagtimerc";
+#
+#foreach my $usrslug (keys %beeminder) {
+    # Extract the user/goal slugs from the .tagtimerc file, which lists all
+    # the slugs with automatic beeminder submission
+#    $usrslug =~ /^(?:.*?(?:\.\/)?data\/)?([^\+\/\.]*)[\+\/]([^\.]*)/;
+#    (my $usr, my $slug) = ($1, $2);
+#    # Erase the cache files if they're present
+#    print "Erasing ${path}$usr+$slug.bee";
+#    unlink "${path}$usr+$slug.bee";
+#}
 
 # Read initial lines from files
 my $l1 = <$f1>;
