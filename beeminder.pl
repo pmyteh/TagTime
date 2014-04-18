@@ -106,6 +106,31 @@ if($bflag) { # re-slurp all the datapoints from beeminder
   $data = beemfetch($usr, $slug);
   print "[Bmndr data fetched]\n";
   
+  # XXX should instead add these to an array; after the corresponding day's
+  # data point is updated later in the script, this point should be deleted.
+  # (Ideally both would happen simultaneously and atomically).
+  # This prevents [delete duplicate points -> derail -> increase values of
+  # remaining points -> back on track, but derailed]. This is probably a
+  # greater concern than [increase values of remaining points -> derail "do
+  # less" goal -> delete duplicate points]. Ideally we could have two code
+  # paths to always do the safer thing. Which one is better can be obtained
+  # using the API: the "yaw" attribute for the goal indicates which side is
+  # "losing".
+
+  $goaldata = beemgetgoal($usr,$slug,"false");
+  # 1 -> Higher is safe; -1 -> lower is safe
+  # If 1, update first then delete. If -1, delete first then update.
+  $yaw = $goaldata->{'yaw'};
+  if(($yaw != -1) and ($yaw != 1)) {
+    die "yaw is neither 1 nor -1! Exiting."
+  }
+
+  # An alternative approach might be to check if there's a data point for
+  # today as a matter of course when adding new data; if there is, read it
+  # back in from beeminder and use that to do a "reverse merge" by adding
+  # the data to the log in some form? That probably won't work as there isn't
+  # a record of which pings were successful in the beeminder data.
+  #
   # take one pass to delete any duplicates on bmndr; must be one datapt per day
   my $i = 0;
   undef %remember;
