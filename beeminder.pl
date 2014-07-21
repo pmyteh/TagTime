@@ -217,12 +217,12 @@ for(my $t = daysnap($start)-86400; $t <= daysnap($end)+86400; $t += 86400) {
     $nadd++;
     $plus += $p1;
     $bh{$ts} = beemcreate($usr,$slug,$t, $p1*$ping, splur($p1,"ping").": ".$s1);
-    #print "Created: $y $m $d  ",$p1*$ping," \"$p1 pings: $s1\"\n";
+    print "Created: $y $m $d  ",$p1*$ping," \"$p1 pings: $s1\"\n";
   } elsif($p0 > 0 && $p1 <= 0) { # on beeminder but not in tagtime log: DELETE
     $ndel++;
     $minus += $p0;
     beemdelete($usr, $slug, $b);
-    #print "Deleted: $y $m $d  ",$p0*$ping," \"$p0 pings: $s0 [bID:$b]\"\n";
+    print "Deleted: $y $m $d  ",$p0*$ping," \"$p0 pings: $s0 [bID:$b]\"\n";
   } elsif($p0 != $p1 || $s0 ne $s1) { # bmndr & tagtime log differ: UPDATE
     $nchg++;
     if   ($p1 > $p0) { $plus  += ($p1-$p0); } 
@@ -237,9 +237,9 @@ for(my $t = daysnap($start)-86400; $t <= daysnap($end)+86400; $t += 86400) {
     # though simply deleting the cache file and waiting for next time is less
     # Intrusive. Deleting the cache files when merging two TT logs would reduce
     # the scope for this somewhat.
-    #print "Updated:\n";
-    #print "$y $m $d  ",$p0*$ping," \"$p0 pings: $s0 [bID:$b]\" to:\n";
-    #print "$y $m $d  ",$p1*$ping," \"$p1 pings: $s1\"\n";
+    print "Updated:\n";
+    print "$y $m $d  ",$p0*$ping," \"$p0 pings: $s0 [bID:$b]\" to:\n";
+    print "$y $m $d  ",$p1*$ping," \"$p1 pings: $s1\"\n";
   } else {
     print "ERROR: can't tell what to do with this datapoint (old/new):\n";
     print "$y $m $d  ",$p0*$ping," \"$p0 pings: $s0 [bID:$b]\"\n";
