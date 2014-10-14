@@ -13,6 +13,17 @@ $cygwin = __CYGWIN__;  # CHANGEME to 1 if you're using windows/cygwin.
 $ED = "__ED__ +";  # CHANGEME if you don't like vi (eg: /usr/bin/pico)
 $XT = "__XT__";    # CHANGEME to your path to xterm
 
+# If you're running TagTime on multiple machines, set $multipleflag to 1 and
+# optionally change the tag that is automatically added from this machine.
+# This allows multiple TagTime instances to coexist on one graph, by updating
+# only those data points they were themselves responsible for writing.
+$multipleflag = 0;
+if($multipleflag) {
+  use Sys::Hostname
+  $hostname = hostname;
+  $machineid = "TT-$hostname";
+}
+
 # Get your personal Beeminder auth token (after signing in) from
 #   https://www.beeminder.com/api/v1/auth_token.json
 $beemauth = "abc123";  # CHANGEME to your personal beeminder auth token
