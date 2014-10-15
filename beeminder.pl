@@ -104,6 +104,11 @@ if($bflag) { # re-slurp all the datapoints from beeminder
     print "Recreating Beeminder cache ($tmp)[$bf1$bf2$bf3$bf4]... ";
   }
   $data = beemfetch($usr, $slug);
+  if($multipleflag) {
+    # Keep only those elements of $data that match $machineid
+    # TODO: Test
+    @$data = grep(/$machineid/,@$data);
+  }
   print "[Bmndr data fetched]\n";
   
   # XXX should instead add these to an array; after the corresponding day's
