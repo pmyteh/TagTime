@@ -184,7 +184,9 @@ while(<T>) { # parse the tagtime log file
   my $t = $1;     # timestamp as parsed from the tagtime log
   my $stuff = $2; # tags and comments for this line of the log
   my $tags = strip($stuff);
-  if(tagmatch($tags, $crit)) {
+  # Must match the appropriate tag. Also, if we are running in multiple, it
+  # must have the appropriate machineid.
+  if(tagmatch($tags, $crit) && (tagmatch($tags, $machineid) || !$multipleflag )) {
     my($y,$m,$d) = dt($t);
     $ph1{"$y-$m-$d"} += 1;
     $sh1{"$y-$m-$d"} .= stripb($stuff) . ", ";
@@ -206,6 +208,10 @@ my $nchg = 0;  # number of updated datapoints on beeminder
 my $minus = 0; # total number of pings decreased from what's on beeminder
 my $plus = 0;  # total number of pings increased from what's on beeminder
 my $ii = 0;
+my $mid = "";  # special string to add as an extra tag identifying tags from
+               # this machine (if using $multipleflag)
+$mid = "$machineid " if $multipleflag;
+
 for(my $t = daysnap($start)-86400; $t <= daysnap($end)+86400; $t += 86400) {
   my($y,$m,$d) = dt($t);
   my $ts = "$y-$m-$d";
@@ -217,11 +223,11 @@ for(my $t = daysnap($start)-86400; $t <= daysnap($end)+86400; $t += 86400) {
   if($p0 eq $p1 && $s0 eq $s1) { # no change to the datapoint on this day
     $nquo++ if $b;
     next;
-  } 
+  }
   if($b eq "" && $p1 > 0) { # no such datapoint on beeminder: CREATE
     $nadd++;
     $plus += $p1;
-    $bh{$ts} = beemcreate($usr,$slug,$t, $p1*$ping, splur($p1,"ping").": ".$s1);
+    $bh{$ts} = beemcreate($usr,$slug,$t, $p1*$ping, splur($p1,"ping").": ".$mid.$s1);
     print "Created: $y $m $d  ",$p1*$ping," \"$p1 pings: $s1\"\n";
   } elsif($p0 > 0 && $p1 <= 0) { # on beeminder but not in tagtime log: DELETE
     $ndel++;
@@ -232,7 +238,7 @@ for(my $t = daysnap($start)-86400; $t <= daysnap($end)+86400; $t += 86400) {
     $nchg++;
     if   ($p1 > $p0) { $plus  += ($p1-$p0); } 
     elsif($p1 < $p0) { $minus += ($p0-$p1); }
-    beemupdate($usr, $slug, $b, $t, ($p1*$ping), splur($p1,"ping").": ".$s1);
+    beemupdate($usr, $slug, $b, $t, ($p1*$ping), splur($p1,"ping").": ".$mid.$s1);
     # If this fails, it may well be because the point being updated was deleted/
     # replaced on another machine (possibly as the result of a merge) and is no
     # longer on the server. In which case we should probably fail gracefully

@@ -16,7 +16,9 @@ $XT = "__XT__";    # CHANGEME to your path to xterm
 # If you're running TagTime on multiple machines, set $multipleflag to 1 and
 # optionally change the tag that is automatically added from this machine.
 # This allows multiple TagTime instances to coexist on one graph, by updating
-# only those data points they were themselves responsible for writing.
+# only those data points they were themselves responsible for writing. If
+# using this system, simply keep the two (or more) .log files separate.
+# Note: Delete your .bee files after setting this to avoid complications.
 $multipleflag = 0;
 if($multipleflag) {
   use Sys::Hostname
